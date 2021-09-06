@@ -29,8 +29,8 @@ public class Student {
     @NotBlank
     @Column(nullable = false)
     private String name;
-    @Email
-    @Column(nullable = false, unique = true)
+    @NotNull
+    @Email    @Column(nullable = false, unique = true)
     private String email;
     @NotNull
     @Enumerated(EnumType.STRING)

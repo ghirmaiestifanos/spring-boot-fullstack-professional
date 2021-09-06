@@ -11,7 +11,7 @@ public interface StudentRepository
             "SELECT CASE WHEN COUNT(s) > 0 THEN " +
             "TRUE ELSE FALSE END " +
             "FROM Student s " +
-            "WHERE s.email = ?1"
+            "WHERE s.email = :email"
     )
     Boolean selectExistsEmail(String email);
 }
