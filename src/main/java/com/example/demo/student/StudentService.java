@@ -10,10 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
@@ -35,22 +37,25 @@ public class StudentService {
                     "Email " + student.getEmail() + " taken");
         }
 
-       return  studentRepository.save(student);
+        return studentRepository.save(student);
     }
 
     public Student deleteStudent(Long studentId) {
-
-      Student student =  studentRepository.findById(studentId).orElseThrow(()-> new StudentNotFoundException("Student with id " + studentId + " does not exists"));
+        if (!studentRepository.existsById(studentId)) {
+            throw new StudentNotFoundException("Student with id " + studentId + " does not exists");
+        }
+        Student student = studentRepository.findById(studentId).get();
         studentRepository.deleteById(studentId);
         return student;
     }
-    public Student updateStudent(Student student){
-        if(student.getId()==null) throw  new BadRequestException("studentID is required to update");
-        if(!studentRepository.existsById(student.getId())){
+
+    public Student updateStudent(Student student) {
+        if (student.getId() == null) throw new BadRequestException("studentID is required to update");
+        if (!studentRepository.existsById(student.getId())) {
             throw new StudentNotFoundException(
-                    "Student with id " + student.getId() + " does not exists"+" hence we cannot update a record that does not exist");
+                    "Student with id " + student.getId() + " does not exists" + " hence we cannot update a record that does not exist");
         }
-    return  studentRepository.save(student);
+        return studentRepository.save(student);
 
     }
 }

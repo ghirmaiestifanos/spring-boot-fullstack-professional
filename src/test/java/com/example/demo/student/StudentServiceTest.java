@@ -12,8 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -96,7 +99,7 @@ class StudentServiceTest {
     void willThrowIdDoesNotExist(){
         //given
        Long studentId =14l;
-       given(studentRepository.findById(studentId)).willThrow(new StudentNotFoundException("Student with id " + studentId + " does not exists"));
+       given(studentRepository.existsById(studentId)).willReturn(false);
        //when
         //then
         assertThatThrownBy(()->underTest.deleteStudent(studentId))
@@ -112,12 +115,15 @@ class StudentServiceTest {
     void canDeleteStudent() {
         //given
         Long studentId =14l;
-        given(studentRepository.existsById(studentId)).willReturn(true);
+      Student student = new Student(14l,"Tesfay","tesfay14@gmail.com",Gender.MALE);
+      Mockito.when(studentRepository.existsById(studentId)).thenReturn(true);
+        given(studentRepository.findById(14l)).willReturn(Optional.of(student));
         //when
-        underTest.deleteStudent(studentId);
+   Student student1=     underTest.deleteStudent(studentId);
      ArgumentCaptor<Long> argumentCaptor=   ArgumentCaptor.forClass(Long.class);
      verify(studentRepository).deleteById(argumentCaptor.capture());
      Long capturedVal = argumentCaptor.getValue();
      assertThat(studentId).isEqualTo(capturedVal);
+     assertThat(student).isEqualTo(student1);
     }
 }
