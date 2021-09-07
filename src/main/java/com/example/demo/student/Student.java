@@ -30,7 +30,7 @@ public class Student {
     @Column(nullable = false)
     private String name;
     @NotNull
-    @Email    @Column(nullable = false, unique = true)
+    @Email    @Column(/*nullable = false, */unique = true)
     private String email;
     @NotNull
     @Enumerated(EnumType.STRING)

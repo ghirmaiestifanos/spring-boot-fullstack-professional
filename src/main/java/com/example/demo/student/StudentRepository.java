@@ -3,8 +3,11 @@ package com.example.demo.student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional(propagation = Propagation.MANDATORY)
 public interface StudentRepository
         extends JpaRepository<Student, Long> {
     @Query("" +
@@ -14,4 +17,6 @@ public interface StudentRepository
             "WHERE s.email = :email"
     )
     Boolean selectExistsEmail(String email);
+    @Query("SELECT case when count (s)>0 then true else false end "+" from  Student s where s.name=:name")
+    Boolean existByName(String name);
 }
