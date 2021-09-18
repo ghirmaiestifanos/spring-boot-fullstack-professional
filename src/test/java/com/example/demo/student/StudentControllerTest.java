@@ -1,36 +1,28 @@
 package com.example.demo.student;
 
+import com.example.demo.student.controller.StudentController;
+import com.example.demo.student.model.Gender;
+import com.example.demo.student.model.Student;
 import com.example.demo.student.exception.ApiException;
 import com.example.demo.student.exception.BadRequestException;
 import com.example.demo.student.exception.StudentNotFoundException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.service.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.validation.BindingResult;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -191,6 +183,7 @@ public class StudentControllerTest {
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(400, status);
+
         Mockito.verify(studentRepository, Mockito.times(0)).save(s1);
         assertThatThrownBy(() -> studentService.updateStudent(s1)).isInstanceOf(BadRequestException.class);
 

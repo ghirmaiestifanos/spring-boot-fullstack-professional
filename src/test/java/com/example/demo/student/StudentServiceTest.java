@@ -1,9 +1,12 @@
 package com.example.demo.student;
 
+import com.example.demo.student.model.Gender;
+import com.example.demo.student.model.Student;
 import com.example.demo.student.exception.BadRequestException;
 import com.example.demo.student.exception.StudentNotFoundException;
 
-import org.junit.jupiter.api.AfterEach;
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;
@@ -26,9 +29,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-
 class StudentServiceTest {
-   @Mock
+    @Mock
     private StudentRepository studentRepository;
 
     private StudentService underTest;
@@ -55,7 +57,6 @@ class StudentServiceTest {
     }
 
     @Test
-
     void canAddStudent() {
         //given
         String email = "jamila@gmail.com";
@@ -75,55 +76,54 @@ class StudentServiceTest {
         assertThat(capturedStudent).isEqualTo(student);
 
     }
-    @Test
 
+    @Test
     void willThrowWhenEmailIsTaken() {
         //given
         String email = "jamila@gmail.com";
         Student student = new Student("Jamila",
                 email,
                 Gender.FEMALE);
-       given(studentRepository.selectExistsEmail(student.getEmail())).willReturn(true);
+        given(studentRepository.selectExistsEmail(student.getEmail())).willReturn(true);
         //when
         //then
-     assertThatThrownBy(()->underTest.addStudent(student))
-             .isInstanceOf(BadRequestException.class)
-             .hasMessage( "Email " + student.getEmail() + " taken");
+        assertThatThrownBy(() -> underTest.addStudent(student))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Email " + student.getEmail() + " taken");
 
-     verify(studentRepository, never()).save(any());
-
+        verify(studentRepository, never()).save(any());
 
 
     }
+
     @Test
-    void willThrowIdDoesNotExist(){
+    void willThrowIdDoesNotExist() {
         //given
-       Long studentId =14l;
-       given(studentRepository.existsById(studentId)).willReturn(false);
-       //when
+        Long studentId = 14l;
+        given(studentRepository.existsById(studentId)).willReturn(false);
+        //when
         //then
-        assertThatThrownBy(()->underTest.deleteStudent(studentId))
+        assertThatThrownBy(() -> underTest.deleteStudent(studentId))
                 .isInstanceOf(StudentNotFoundException.class)
                 .hasMessage("Student with id " + studentId + " does not exists");
-        verify(studentRepository,never()).deleteById(any());
+        verify(studentRepository, never()).deleteById(any());
 
 
     }
 
     @Test
-
     void canDeleteStudent() {
         //given
-        Long studentId =14l;
-      Student student = new Student(14l,"Tesfay","tesfay14@gmail.com",Gender.MALE);
-      Mockito.when(studentRepository.existsById(studentId)).thenReturn(true);
+        Long studentId = 14l;
+        Student student = new Student(14l, "Tesfay", "tesfay14@gmail.com", Gender.MALE);
+        Mockito.when(studentRepository.existsById(studentId)).thenReturn(true);
         given(studentRepository.findById(14l)).willReturn(Optional.of(student));
         //when
-   Student student1=     underTest.deleteStudent(studentId);
-     ArgumentCaptor<Long> argumentCaptor=   ArgumentCaptor.forClass(Long.class);
-     verify(studentRepository).deleteById(argumentCaptor.capture());
-     Long capturedVal = argumentCaptor.getValue();
-     assertThat(studentId).isEqualTo(capturedVal);
-     assertThat(student).isEqualTo(student1);
+        Student student1 = underTest.deleteStudent(studentId);
+        ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(studentRepository).deleteById(argumentCaptor.capture());
+        Long capturedVal = argumentCaptor.getValue();
+        assertThat(studentId).isEqualTo(capturedVal);
+        assertThat(student).isEqualTo(student1);
     }
 }

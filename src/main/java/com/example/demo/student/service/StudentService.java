@@ -1,14 +1,12 @@
-package com.example.demo.student;
+package com.example.demo.student.service;
 
-import com.example.demo.student.exception.ApiException;
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.model.Student;
 import com.example.demo.student.exception.BadRequestException;
 import com.example.demo.student.exception.StudentNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.transaction.Transactional;
 import java.util.List;
